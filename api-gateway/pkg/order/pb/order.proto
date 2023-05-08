@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "./pkg/order/pb";
+
+// OrderService is a service that handles order-related operations.
+service OrderService{
+
+  // CreateOrder is an RPC method that allows the creation of a new order.
+  // It takes a CreateOrderRequest message as input, containing the product ID,
+  // quantity, and user ID associated with the order. The server will respond with
+  // a CreateOrderResponse message, which includes a status indicating the result
+  // of the order creation, an error message if applicable, and the ID of the newly
+  // created order.
+  rpc  CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {}
+}
+
+// CreateOrderRequest is a message that carries the necessary data to create an order.
+message CreateOrderRequest{
+  int64 productID = 1;
+  int64 quantity = 2;
+  int64 userId = 3;
+}
+
+// CreateOrderResponse is a message that carries the response after attempting to create an order.
+message CreateOrderResponse{
+  int64 status = 1;
+  string error = 2;
+  int64 id = 3;
+}
