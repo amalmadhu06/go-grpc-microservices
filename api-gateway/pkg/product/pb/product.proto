@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "./pkg/product/pb";
+
+// ProductService is a service that handles product-related operations.
+service ProductService{
+
+  // CreateProduct is an RPC method that allows the creation of a new product.
+  // It takes a CreateProductRequest message as input, containing the name,
+  // SKU, stock, and price of the product. The server will respond with a
+  // CreateProductResponse message, which includes a status indicating the result
+  // of the product creation, an error message if applicable, and the ID of the newly
+  // created product.
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+
+  // FindOne is an RPC method that retrieves the details of a specific product
+  // based on the provided ID. It takes a FindOneRequest message with the ID of
+  // the product to be found. The server responds with a FindOneResponse message,
+  // which includes a status indicating the result of the search, an error message
+  // if applicable, and the data of the found product.
+  rpc FindOne(FindOneRequest) returns (FindOneResponse);
+
+  // DecreaseStock is an RPC method that decrements the stock of a product when an
+  // order is placed. It takes a DecreaseStockRequest message with the ID of the
+  // product and the associated order ID. The server responds with a
+  // DecreaseStockResponse message, which includes a status indicating the result
+  // of the stock decrease operation, and an error message if applicable.
+  rpc DecreaseStock(DecreaseStockRequest) returns (DecreaseStockResponse);
+}
+
+// CreateProductRequest is a message that carries the necessary data to create a product.
+message CreateProductRequest{
+  string name = 1;
+  string sku = 2;
+  int64 stock = 3;
+  int64 price = 4;
+}
+
+// CreateProductResponse is a message that carries the response after attempting to create a product.
+message CreateProductResponse{
+  int64 status = 1;
+  string error = 2;
+  int64 id = 3;
+}
+
+// FindOneData is a message that represents the data of a single product.
+message FindOneData{
+  int64 id = 1;
+  string name = 2;
+  string sku = 3;
+  int64 stock = 4;
+  int64 price = 5;
+}
+
+// FindOneRequest is a message that carries the ID of the product to be found.
+message FindOneRequest{
+  int64 id = 1;
+}
+
+// FindOneResponse is a message that carries the response after attempting to find a product.
+message FindOneResponse{
+  int64 status = 1;
+  string error = 2;
+  FindOneData data = 3;
+}
+
+// DecreaseStockRequest is a message that carries the necessary data to decrease the stock of a product.
+message DecreaseStockRequest{
+  int64 id = 1;
+  int64 orderId = 2;
+}
+
+// DecreaseStockResponse is a message that carries the response after attempting to decrease the stock of a product.
+message DecreaseStockResponse{
+  int64 status = 1;
+  string error = 2;
+}
