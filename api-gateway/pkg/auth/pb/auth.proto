@@ -1,0 +1,68 @@
+// mention which version of proto are we using
+syntax = "proto3";
+
+//package name
+package auth;
+
+// mention where to store the auto generated files
+option go_package = "./pkg/auth/pb";
+
+// This service handles user authentication and provides three methods: Register, Login, and Validate.
+service AuthService{
+  // Register
+  // This method allows a user to register by providing their email and password.
+  // The server will respond with a status indicating the result of the registration
+  // attempt and an error message if applicable.
+  rpc Register(RegisterRequest) returns (RegisterResponse){}
+
+  // Login
+  // This method allows a user to log in by providing their email and password.
+  // Upon successful login, the server will respond with a status indicating the
+  // login result, an error message if applicable, and a token that can be used for
+  // subsequent authenticated requests.
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+
+  // Validate
+  // This method is used to validate a token received from a client.
+  // The client sends the token in a ValidateRequest, and the server responds with
+  // a status indicating the validation result, an error message if applicable, and
+  // the user ID associated with the token if the validation is successful.
+  rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+}
+
+// RegisterRequest message contains the information required to register a user.
+message RegisterRequest{
+  string email = 1;
+  string password = 2;
+}
+
+// RegisterResponse message contains the response sent back after a registration attempt.
+message RegisterResponse{
+  int64 status = 1;
+  string error = 2;
+}
+
+// LoginRequest message contains the user's login credentials.
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// LoginResponse message contains the response sent back after a login attempt.
+message LoginResponse{
+  int64 status = 1;
+  string error = 2;
+  string token = 3;
+}
+
+// ValidateRequest message contains the token to be validated.
+message ValidateRequest{
+  string token = 1;
+}
+
+// ValidateResponse message contains the response sent back after a token validation.
+message ValidateResponse{
+  int64 status = 1;
+  string error = 2;
+  int64 userId = 3;
+}
