@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/auth/pb"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,10 +14,12 @@ type AuthMiddlewareConfig struct {
 }
 
 func InitAuthMiddleware(svc *ServiceClient) AuthMiddlewareConfig {
+	fmt.Println("API Gateway :  InitAuthMiddleware")
 	return AuthMiddlewareConfig{svc: svc}
 }
 
 func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
+	fmt.Println("API Gateway :  AuthRequired")
 	authorization := ctx.Request.Header.Get("Authorization")
 
 	if authorization == "" {

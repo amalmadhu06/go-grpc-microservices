@@ -1,6 +1,7 @@
 package order
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/auth"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/config"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/order/routes"
@@ -8,6 +9,7 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) {
+	fmt.Println("API Gateway :  RegisterRoutes")
 	a := auth.InitAuthMiddleware(authSvc)
 
 	svc := &ServiceClient{
@@ -19,5 +21,6 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 }
 
 func (svc *ServiceClient) CreateOrder(ctx *gin.Context) {
+	fmt.Println("API Gateway :  CreateOrder")
 	routes.CreateOrder(ctx, svc.Client)
 }

@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/auth"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/config"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/product/routes"
@@ -8,6 +9,7 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) {
+	fmt.Println("API Gateway :  RegisterRoutes")
 	a := auth.InitAuthMiddleware(authSvc)
 
 	svc := &ServiceClient{
@@ -21,9 +23,11 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 }
 
 func (svc *ServiceClient) FindOne(ctx *gin.Context) {
+	fmt.Println("API Gateway :  FindOne")
 	routes.FineOne(ctx, svc.Client)
 }
 
 func (svc *ServiceClient) CreateProduct(ctx *gin.Context) {
+	fmt.Println("API Gateway :  CreateProduct called --> 1")
 	routes.CreateProduct(ctx, svc.Client)
 }

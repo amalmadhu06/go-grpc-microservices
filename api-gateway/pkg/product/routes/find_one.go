@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/product/pb"
 	"net/http"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 )
 
 func FineOne(ctx *gin.Context, c pb.ProductServiceClient) {
+	fmt.Println("API Gateway :  FindOne")
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 32)
 
 	res, err := c.FindOne(context.Background(), &pb.FindOneRequest{

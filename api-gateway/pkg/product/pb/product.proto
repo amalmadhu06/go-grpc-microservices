@@ -33,9 +33,8 @@ service ProductService{
 // CreateProductRequest is a message that carries the necessary data to create a product.
 message CreateProductRequest{
   string name = 1;
-  string sku = 2;
-  int64 stock = 3;
-  int64 price = 4;
+  int64 stock = 2;
+  int64 price = 3;
 }
 
 // CreateProductResponse is a message that carries the response after attempting to create a product.
@@ -49,9 +48,8 @@ message CreateProductResponse{
 message FindOneData{
   int64 id = 1;
   string name = 2;
-  string sku = 3;
-  int64 stock = 4;
-  int64 price = 5;
+  int64 stock = 3;
+  int64 price = 4;
 }
 
 // FindOneRequest is a message that carries the ID of the product to be found.

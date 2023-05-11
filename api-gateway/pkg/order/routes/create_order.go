@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/order/pb"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,6 +14,7 @@ type CreateOrderRequestBody struct {
 }
 
 func CreateOrder(ctx *gin.Context, c pb.OrderServiceClient) {
+	fmt.Println("API Gateway :  CreateOrder")
 	body := CreateOrderRequestBody{}
 
 	if err := ctx.BindJSON(&body); err != nil {

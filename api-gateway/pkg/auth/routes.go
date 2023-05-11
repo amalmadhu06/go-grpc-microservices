@@ -1,12 +1,14 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/auth/routes"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/config"
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterRoutes(r *gin.Engine, c *config.Config) *ServiceClient {
+	fmt.Println("API Gateway :  Register Routes")
 	svc := &ServiceClient{
 		Client: InitServiceClient(c),
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/auth"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/config"
 	"github.com/amalmadhu06/go-grpc-microservices/api-gateway/pkg/order"
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+	fmt.Println("starting API Gateway")
 	c, err := config.LoadConfig()
 
 	if err != nil {
