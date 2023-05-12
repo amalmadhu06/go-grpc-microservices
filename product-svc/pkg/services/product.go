@@ -38,7 +38,6 @@ func (s *Server) CreateProduct(ctx context.Context, req *pb.CreateProductRequest
 }
 
 func (s *Server) FindOne(ctx context.Context, req *pb.FindOneRequest) (*pb.FindOneResponse, error) {
-	fmt.Println("Product Service :  FindOne")
 	var product models.Product
 
 	if result := s.H.DB.First(&product, req.Id); result.Error != nil {
@@ -54,12 +53,45 @@ func (s *Server) FindOne(ctx context.Context, req *pb.FindOneRequest) (*pb.FindO
 		Stock: product.Stock,
 		Price: product.Price,
 	}
-	fmt.Println("repository")
-	fmt.Println(data)
-	fmt.Println("------------------")
+
 	return &pb.FindOneResponse{
 		Status: http.StatusOK,
 		Data:   data,
+	}, nil
+}
+
+func (s *Server) FindAll(ctx context.Context, req *pb.FindAllRequest) (*pb.FindAllResponse, error) {
+	var products []models.Product
+
+	rows, err := s.H.DB.Model(&models.Product{}).Where("stock > 0").Rows()
+	defer rows.Close()
+	if err != nil {
+		return &pb.FindAllResponse{}, err
+	}
+
+	for rows.Next() {
+		var product models.Product
+		err := s.H.DB.ScanRows(rows, &product)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+
+	var outProducts []*pb.FindOneData
+	for _, v := range products {
+		var p pb.FindOneData
+		p.Id = v.Id
+		p.Name = v.Name
+		p.Price = v.Price
+		p.Stock = v.Stock
+
+		outProducts = append(outProducts, &p)
+	}
+
+	return &pb.FindAllResponse{
+		Status:   http.StatusOK,
+		Products: outProducts,
 	}, nil
 }
 

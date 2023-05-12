@@ -22,6 +22,8 @@ service ProductService{
   // if applicable, and the data of the found product.
   rpc FindOne(FindOneRequest) returns (FindOneResponse);
 
+  rpc FindAll(FindAllRequest) returns (FindAllResponse);
+
   // DecreaseStock is an RPC method that decrements the stock of a product when an
   // order is placed. It takes a DecreaseStockRequest message with the ID of the
   // product and the associated order ID. The server responds with a
@@ -62,6 +64,17 @@ message FindOneResponse{
   int64 status = 1;
   string error = 2;
   FindOneData data = 3;
+}
+
+//FindAllRequest
+message FindAllRequest{
+}
+
+//FindAllResponse
+message FindAllResponse{
+  int64 status = 1;
+  string error = 2;
+  repeated FindOneData products = 3;
 }
 
 // DecreaseStockRequest is a message that carries the necessary data to decrease the stock of a product.

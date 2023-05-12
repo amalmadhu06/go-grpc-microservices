@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ProductServiceClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResponse, error)
+	FindAll(ctx context.Context, in *FindAllRequest, opts ...grpc.CallOption) (*FindAllResponse, error)
 	DecreaseStock(ctx context.Context, in *DecreaseStockRequest, opts ...grpc.CallOption) (*DecreaseStockResponse, error)
 }
 
@@ -53,6 +54,15 @@ func (c *productServiceClient) FindOne(ctx context.Context, in *FindOneRequest, 
 	return out, nil
 }
 
+func (c *productServiceClient) FindAll(ctx context.Context, in *FindAllRequest, opts ...grpc.CallOption) (*FindAllResponse, error) {
+	out := new(FindAllResponse)
+	err := c.cc.Invoke(ctx, "/product.ProductService/FindAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreaseStockRequest, opts ...grpc.CallOption) (*DecreaseStockResponse, error) {
 	out := new(DecreaseStockResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/DecreaseStock", in, out, opts...)
@@ -68,6 +78,7 @@ func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreaseSt
 type ProductServiceServer interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error)
+	FindAll(context.Context, *FindAllRequest) (*FindAllResponse, error)
 	DecreaseStock(context.Context, *DecreaseStockRequest) (*DecreaseStockResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
@@ -81,6 +92,9 @@ func (UnimplementedProductServiceServer) CreateProduct(context.Context, *CreateP
 }
 func (UnimplementedProductServiceServer) FindOne(context.Context, *FindOneRequest) (*FindOneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindOne not implemented")
+}
+func (UnimplementedProductServiceServer) FindAll(context.Context, *FindAllRequest) (*FindAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
 func (UnimplementedProductServiceServer) DecreaseStock(context.Context, *DecreaseStockRequest) (*DecreaseStockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecreaseStock not implemented")
@@ -134,6 +148,24 @@ func _ProductService_FindOne_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_FindAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindAllRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).FindAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.ProductService/FindAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).FindAll(ctx, req.(*FindAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProductService_DecreaseStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DecreaseStockRequest)
 	if err := dec(in); err != nil {
@@ -166,6 +198,10 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindOne",
 			Handler:    _ProductService_FindOne_Handler,
+		},
+		{
+			MethodName: "FindAll",
+			Handler:    _ProductService_FindAll_Handler,
 		},
 		{
 			MethodName: "DecreaseStock",

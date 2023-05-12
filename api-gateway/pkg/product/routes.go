@@ -20,6 +20,7 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.Use(a.AuthRequired)
 	routes.POST("/", svc.CreateProduct)
 	routes.GET("/:id", svc.FindOne)
+	routes.GET("/", svc.FindAll)
 }
 
 func (svc *ServiceClient) FindOne(ctx *gin.Context) {
@@ -30,4 +31,8 @@ func (svc *ServiceClient) FindOne(ctx *gin.Context) {
 func (svc *ServiceClient) CreateProduct(ctx *gin.Context) {
 	fmt.Println("API Gateway :  CreateProduct called --> 1")
 	routes.CreateProduct(ctx, svc.Client)
+}
+
+func (svc *ServiceClient) FindAll(ctx *gin.Context) {
+	routes.FindAll(ctx, svc.Client)
 }

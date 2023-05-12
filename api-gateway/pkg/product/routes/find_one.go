@@ -23,5 +23,5 @@ func FineOne(ctx *gin.Context, c pb.ProductServiceClient) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &res)
+	ctx.JSON(http.StatusOK, &res)
 }
