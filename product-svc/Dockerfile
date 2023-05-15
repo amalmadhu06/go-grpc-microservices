@@ -3,6 +3,8 @@ FROM golang:1.19-alpine AS build
 # working directory
 WORKDIR /app
 # copy go.mod and go.sum to working directory
+COPY go.mod ./
+COPY go.sum ./
 # download dependencies
 RUN go mod download
 # copy rest of the files to working directory
