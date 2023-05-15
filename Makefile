@@ -14,3 +14,8 @@ stop:
 	taskkill /PID 9160 /F
 	taskkill /PID 8868 /F
 	taskkill /PID 6864 /F
+docker-build:
+	cd api-gateway && docker build -t ecom-api-gateway .
+	cd auth-svc && docker build -t ecom-auth-svc .
+	cd order-svc && docker build -t ecom-order-svc .
+	cd product-svc && docker build -t ecom-product-svc .
