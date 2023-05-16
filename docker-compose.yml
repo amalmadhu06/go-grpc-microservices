@@ -1,0 +1,64 @@
+version: "3.9"
+services:
+  api-gateway:
+    image: amalmadhu06/ecom-api-gateway
+    environment:
+      - PORT=3000
+      - AUTH_SVC_URL=localhost:50051
+      - PRODUCT_SVC_URL=localhost:50052
+      - ORDER_SVC_URL=localhost:50053
+    ports:
+      - "3000:3000"
+
+  auth-svc:
+    image: amalmadhu06/ecom-auth-svc
+    ports:
+      - "50051:50051"
+    environment:
+      - PORT=:50051
+      - DB_URL=postgres://postgres:postgres@localhost:5432/auth_svc
+      - JWT_SECRET_KEY=h28dh582fcu390
+    depends_on:
+      - auth-db
+
+  product-svc:
+    image: amalmadhu06/ecom-product-svc
+    ports:
+      - "50052:50052"
+    environment:
+      - PORT=:50052
+      - DB_URL=postgres://postgres:postgres@localhost:5432/product_svc
+    depends_on:
+      - product-db
+
+  order-svc:
+    image: amalmadhu06/ecom-order-svc
+    ports:
+      - "50053:50053"
+    environment:
+      - PORT=:50053
+      - DB_URL=postgres://postgres:postgres@localhost:5432/order_svc
+      - PRODUCT_SVC_URL=localhost:50052
+    depends_on:
+      - order-db
+
+  auth-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=auth_svc
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  product-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=product_svc
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  order-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=order_svc
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
