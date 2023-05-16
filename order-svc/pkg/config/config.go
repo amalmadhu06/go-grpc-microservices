@@ -1,6 +1,9 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	Port          string `mapstructure:"PORT"`
@@ -8,20 +11,33 @@ type Config struct {
 	ProductSvcUrl string `mapstructure:"PRODUCT_SVC_URL"`
 }
 
-func LoadConfig() (config Config, err error) {
-	viper.AddConfigPath("./pkg/config/envs")
-	viper.SetConfigName("dev")
-	viper.SetConfigType("env")
+var envs = []string{
+	"PORT",
+	"DB_URL",
+	"PRODUCT_SVC_URL",
+}
 
-	viper.AutomaticEnv()
+// LoadConfig loads the application configuration from environment variables or a configuration file.
+func LoadConfig() (Config, error) {
+	var config Config
 
-	err = viper.ReadInConfig()
+	viper.AddConfigPath("./")
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
 
-	if err != nil {
-		return
+	for _, env := range envs {
+		if err := viper.BindEnv(env); err != nil {
+			return config, err
+		}
 	}
 
-	err = viper.Unmarshal(&config)
+	if err := viper.Unmarshal(&config); err != nil {
+		return config, err
+	}
 
-	return
+	if err := validator.New().Struct(&config); err != nil {
+		return config, err
+	}
+
+	return config, nil
 }
