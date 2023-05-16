@@ -3,12 +3,17 @@ services:
   api-gateway:
     image: amalmadhu06/ecom-api-gateway
     environment:
-      - PORT=3000
+      - PORT=:3000
       - AUTH_SVC_URL=localhost:50051
       - PRODUCT_SVC_URL=localhost:50052
       - ORDER_SVC_URL=localhost:50053
     ports:
       - "3000:3000"
+    depends_on:
+      - auth-svc
+      - product-svc
+      - order-svc
+    restart: always
 
   auth-svc:
     image: amalmadhu06/ecom-auth-svc
@@ -16,10 +21,11 @@ services:
       - "50051:50051"
     environment:
       - PORT=:50051
-      - DB_URL=postgres://postgres:postgres@localhost:5432/auth_svc
+      - DB_URL=postgres://postgres:postgres@auth-db:5432/auth_svc
       - JWT_SECRET_KEY=h28dh582fcu390
     depends_on:
       - auth-db
+    restart: always
 
   product-svc:
     image: amalmadhu06/ecom-product-svc
@@ -27,9 +33,10 @@ services:
       - "50052:50052"
     environment:
       - PORT=:50052
-      - DB_URL=postgres://postgres:postgres@localhost:5432/product_svc
+      - DB_URL=postgres://postgres:postgres@product-db:5432/product_svc
     depends_on:
       - product-db
+    restart: always
 
   order-svc:
     image: amalmadhu06/ecom-order-svc
@@ -37,28 +44,39 @@ services:
       - "50053:50053"
     environment:
       - PORT=:50053
-      - DB_URL=postgres://postgres:postgres@localhost:5432/order_svc
+      - DB_URL=postgres://postgres:postgres@order-db:5432/order_svc
       - PRODUCT_SVC_URL=localhost:50052
     depends_on:
       - order-db
+      - product-svc
+    restart: always
 
   auth-db:
     image: postgres:latest
+    ports:
+      - "5433:5432"
     environment:
       - POSTGRES_DB=auth_svc
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
 
   product-db:
     image: postgres:latest
+    ports:
+      - "5434:5432"
     environment:
       - POSTGRES_DB=product_svc
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
 
   order-db:
     image: postgres:latest
+    ports:
+      - "5435:5432"
     environment:
       - POSTGRES_DB=order_svc
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
