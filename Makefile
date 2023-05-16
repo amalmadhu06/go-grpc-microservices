@@ -1,4 +1,4 @@
-run:
+run-all:
 	cd api-gateway && start /b make server
 	cd auth-svc && start /b make server
 	cd order-svc && start /b make server
@@ -15,7 +15,15 @@ stop:
 	taskkill /PID 8868 /F
 	taskkill /PID 6864 /F
 docker-build:
-	cd api-gateway && docker build -t ecom-api-gateway .
-	cd auth-svc && docker build -t ecom-auth-svc .
-	cd order-svc && docker build -t ecom-order-svc .
-	cd product-svc && docker build -t ecom-product-svc .
+	cd api-gateway && docker build -t amalmadhu06/ecom-api-gateway .
+	cd auth-svc && docker build -t amalmadhu06/ecom-auth-svc .
+	cd order-svc && docker build -t amalmadhu06/ecom-order-svc .
+	cd product-svc && docker build -t amalmadhu06/ecom-product-svc .
+
+docker-push:
+	cd api-gateway && docker push amalmadhu06/ecom-api-gateway
+	cd auth-svc && docker push amalmadhu06/ecom-auth-svc
+	cd order-svc && docker push amalmadhu06/ecom-order-svc
+	cd product-svc && docker push amalmadhu06/ecom-product-svc
+run:
+	sudo docker compose up
