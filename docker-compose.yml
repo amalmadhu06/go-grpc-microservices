@@ -4,9 +4,9 @@ services:
     image: amalmadhu06/ecom-api-gateway
     environment:
       - PORT=:3000
-      - AUTH_SVC_URL=localhost:50051
-      - PRODUCT_SVC_URL=localhost:50052
-      - ORDER_SVC_URL=localhost:50053
+      - AUTH_SVC_URL=ath-svc:50051
+      - PRODUCT_SVC_URL=product-svc:50052
+      - ORDER_SVC_URL=order-svc:50053
     ports:
       - "3000:3000"
     depends_on:
@@ -45,7 +45,7 @@ services:
     environment:
       - PORT=:50053
       - DB_URL=postgres://postgres:postgres@order-db:5432/order_svc
-      - PRODUCT_SVC_URL=localhost:50052
+      - PRODUCT_SVC_URL=product-svc:50052
     depends_on:
       - order-db
       - product-svc
