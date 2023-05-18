@@ -12,10 +12,12 @@ func RegisterRoutes(r *gin.Engine, c *config.Config) *ServiceClient {
 	svc := &ServiceClient{
 		Client: InitServiceClient(c),
 	}
-	routes := r.Group("/auth")
-	routes.POST("/register", svc.Register)
-	routes.POST("/login", svc.Login)
+	user := r.Group("/auth")
+	user.POST("/register", svc.Register)
+	user.POST("/login", svc.Login)
 
+	admin := r.Group("/admin")
+	admin.POST("/login", svc.AdminLogin)
 	return svc
 }
 
@@ -24,4 +26,8 @@ func (svc *ServiceClient) Register(ctx *gin.Context) {
 }
 func (svc *ServiceClient) Login(ctx *gin.Context) {
 	routes.Login(ctx, svc.Client)
+}
+
+func (svc *ServiceClient) AdminLogin(ctx *gin.Context) {
+	routes.AdminLogin(ctx, svc.Client)
 }

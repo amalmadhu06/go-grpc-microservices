@@ -28,41 +28,38 @@ service AuthService{
   // a status indicating the validation result, an error message if applicable, and
   // the user ID associated with the token if the validation is successful.
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+
+  rpc AdminLogin(LoginRequest) returns (LoginResponse);
 }
 
-// RegisterRequest message contains the information required to register a user.
 message RegisterRequest{
   string email = 1;
   string password = 2;
 }
 
-// RegisterResponse message contains the response sent back after a registration attempt.
 message RegisterResponse{
   int64 status = 1;
   string error = 2;
 }
 
-// LoginRequest message contains the user's login credentials.
-message LoginRequest {
+message LoginRequest{
   string email = 1;
   string password = 2;
 }
 
-// LoginResponse message contains the response sent back after a login attempt.
-message LoginResponse{
+message  LoginResponse{
   int64 status = 1;
   string error = 2;
   string token = 3;
 }
 
-// ValidateRequest message contains the token to be validated.
 message ValidateRequest{
   string token = 1;
+  string role = 2;
 }
 
-// ValidateResponse message contains the response sent back after a token validation.
 message ValidateResponse{
   int64 status = 1;
   string error = 2;
-  int64 userId = 3;
+  int64  userId = 3;
 }

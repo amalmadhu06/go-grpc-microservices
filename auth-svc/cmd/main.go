@@ -21,7 +21,7 @@ func main() {
 	}
 
 	fmt.Println(c.DBUrl)
-	h := db.Init(c.DBUrl)
+	h := db.Init(c)
 
 	jwt := utils.JWTWrapper{
 		SecretKey:       c.JWTSecretKey,

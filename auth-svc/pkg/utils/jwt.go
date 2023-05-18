@@ -17,12 +17,14 @@ type jwtClaims struct {
 	jwt.StandardClaims
 	Id    int64
 	Email string
+	Role  string
 }
 
-func (w *JWTWrapper) GenerateToken(user models.User) (signedToken string, err error) {
+func (w *JWTWrapper) GenerateToken(user models.User, role string) (signedToken string, err error) {
 	claims := &jwtClaims{
 		Id:    user.Id,
 		Email: user.Email,
+		Role:  role,
 		StandardClaims: jwt.StandardClaims{
 			//Audience:  "",
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(w.ExpirationHours)).Unix(),
@@ -44,7 +46,7 @@ func (w *JWTWrapper) GenerateToken(user models.User) (signedToken string, err er
 	return signedToken, nil
 }
 
-func (w *JWTWrapper) ValidateToken(singedToken string) (claims *jwtClaims, err error) {
+func (w *JWTWrapper) ValidateToken(singedToken string, role string) (claims *jwtClaims, err error) {
 	token, err := jwt.ParseWithClaims(
 		singedToken,
 		&jwtClaims{},
@@ -54,11 +56,14 @@ func (w *JWTWrapper) ValidateToken(singedToken string) (claims *jwtClaims, err e
 	if err != nil {
 		return nil, err
 	}
+
 	claims, ok := token.Claims.(*jwtClaims)
 	if !ok {
 		return nil, errors.New("couldn't parse claims")
 	}
-
+	if claims.Role != role {
+		return nil, errors.New("role not matching")
+	}
 	if claims.ExpiresAt < time.Now().Local().Unix() {
 		return nil, errors.New("JWT is expired")
 	}

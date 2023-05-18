@@ -18,7 +18,7 @@ func InitAuthMiddleware(svc *ServiceClient) AuthMiddlewareConfig {
 	return AuthMiddlewareConfig{svc: svc}
 }
 
-func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
+func (c *AuthMiddlewareConfig) UserAuth(ctx *gin.Context) {
 	fmt.Println("API Gateway :  AuthRequired")
 	authorization := ctx.Request.Header.Get("Authorization")
 
@@ -36,6 +36,38 @@ func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
 
 	res, err := c.svc.Client.Validate(context.Background(), &pb.ValidateRequest{
 		Token: token[1],
+		Role:  "user",
+	})
+
+	if err != nil || res.Status != http.StatusOK {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	ctx.Set("userId", res.UserId)
+
+	ctx.Next()
+}
+
+func (c *AuthMiddlewareConfig) AdminAuth(ctx *gin.Context) {
+	fmt.Println("API Gateway :  AuthRequired")
+	authorization := ctx.Request.Header.Get("Authorization")
+
+	if authorization == "" {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	token := strings.Split(authorization, "Bearer ")
+
+	if len(token) > 2 {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	res, err := c.svc.Client.Validate(context.Background(), &pb.ValidateRequest{
+		Token: token[1],
+		Role:  "admin",
 	})
 
 	if err != nil || res.Status != http.StatusOK {

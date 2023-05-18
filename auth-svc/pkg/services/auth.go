@@ -57,7 +57,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		}, nil
 	}
 
-	token, _ := s.Jwt.GenerateToken(user)
+	token, _ := s.Jwt.GenerateToken(user, "user")
 
 	return &pb.LoginResponse{
 		Status: http.StatusOK,
@@ -67,7 +67,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 
 func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
 	fmt.Println("Auth Service :  Validate")
-	claims, err := s.Jwt.ValidateToken(req.Token)
+	claims, err := s.Jwt.ValidateToken(req.Token, req.Role)
 
 	if err != nil {
 		return &pb.ValidateResponse{
@@ -77,12 +77,23 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 	}
 
 	var user models.User
-
-	if result := s.H.DB.Where(&models.User{Email: claims.Email}).First(&user); result.Error != nil {
-		return &pb.ValidateResponse{
-			Status: http.StatusNotFound,
-			Error:  "User not found",
-		}, nil
+	fmt.Println(req.Role)
+	if req.Role == "user" {
+		if result := s.H.DB.Where(&models.User{Email: claims.Email}).First(&user); result.Error != nil {
+			return &pb.ValidateResponse{
+				Status: http.StatusNotFound,
+				Error:  "User not found",
+			}, nil
+		}
+	}
+	if req.Role == "admin" {
+		sql := `SELECT * FROM admins WHERE email = $1 LIMIT 1;`
+		if result := s.H.DB.Raw(sql, claims.Email).Scan(&user); result.Error != nil {
+			return &pb.ValidateResponse{
+				Status: http.StatusNotFound,
+				Error:  "admin not found",
+			}, nil
+		}
 	}
 
 	return &pb.ValidateResponse{

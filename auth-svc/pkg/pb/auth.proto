@@ -8,6 +8,8 @@ service AuthService{
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc Validate(ValidateRequest) returns (ValidateResponse);
+
+  rpc AdminLogin(LoginRequest) returns (LoginResponse);
 }
 
 message RegisterRequest{
@@ -33,6 +35,7 @@ message  LoginResponse{
 
 message ValidateRequest{
   string token = 1;
+  string role = 2;
 }
 
 message ValidateResponse{
