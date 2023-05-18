@@ -1,0 +1,40 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+
+  build:
+    name: Build images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: grpc-ecom
+        run: |
+          cd api-gateway && docker build -t $REGISTRY/$REPOSITORY:api-gateway .
+          cd api-gateway && docker push $REGISTRY/$REPOSITORY:api-gateway
+          cd auth-svc && docker build -t $REGISTRY/$REPOSITORY:auth-svc .
+          cd auth-svc && docker push $REGISTRY/$REPOSITORY:auth-svc
+          cd product-svc && docker build -t $REGISTRY/$REPOSITORY:product-svc .
+          cd product-svc && docker push $REGISTRY/$REPOSITORY:product-svc
+          cd order-svc && docker build -t $REGISTRY/$REPOSITORY:order-svc .
+          cd order-svc && docker push $REGISTRY/$REPOSITORY:order-svc
