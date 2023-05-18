@@ -31,6 +31,8 @@ jobs:
           REPOSITORY: grpc-ecom
         run: |
           docker push $REGISTRY/$REPOSITORY:api-gateway
+          pwd
+          ls
           cd ../auth-svc && docker build -t $REGISTRY/$REPOSITORY:auth-svc .
           docker push $REGISTRY/$REPOSITORY:auth-svc
           cd ../product-svc && docker build -t $REGISTRY/$REPOSITORY:product-svc .
