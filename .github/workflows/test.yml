@@ -1,0 +1,31 @@
+name: Go package
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+
+      - name: Test API Gateway
+        run: cd api-gateway && go test ./...
+
+      - name: Test Auth Service
+        run: cd auth-svc && go test ./...
+
+      - name: Test Product Service
+        run: cd product-svc && go test ./...
+
+      - name: Test Order Service
+        run: cd order-svc && go test ./...
