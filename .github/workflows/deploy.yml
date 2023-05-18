@@ -30,11 +30,11 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: grpc-ecom
         run:
-          docker build -t $REGISTRY/$REPOSITORY:api-gateway -f api-gateway/Dockerfile .
+          cd api-gateway && docker build -t $REGISTRY/$REPOSITORY:api-gateway .
           docker push $REGISTRY/$REPOSITORY:api-gateway
-          docker build -t $REGISTRY/$REPOSITORY:auth-svc -f auth-svc/Dockerfile .
+          cd ../auth-svc && docker build -t $REGISTRY/$REPOSITORY:auth-svc .
           docker push $REGISTRY/$REPOSITORY:auth-svc
-          docker build -t $REGISTRY/$REPOSITORY:product-svc -f product-svc/Dockerfile .
+          cd ../product-svc && docker build -t $REGISTRY/$REPOSITORY:product-svc .
           docker push $REGISTRY/$REPOSITORY:product-svc
-          docker build -t $REGISTRY/$REPOSITORY:order-svc -f order-svc/Dockerfile .
+          cd ../order-svc && docker build -t $REGISTRY/$REPOSITORY:order-svc .
           docker push $REGISTRY/$REPOSITORY:order-svc
