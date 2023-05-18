@@ -8,7 +8,7 @@ COPY go.sum ./
 # download dependencies
 RUN go mod download
 # copy rest of the files to working directory
-COPY .. .
+COPY . .
 # build the application
 RUN go build -o ./out/dist ./cmd
 
